@@ -9,13 +9,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
   console.log(beerList)
   console.log(beerContainer)
   let allBeers = []
+  let url = "http://localhost:3000/beers"
 
 fetchBooks()
 // editBeer()
 // singleBeer()
  // [1] fetch beer list
 function fetchBooks(){
-  fetch ("http://localhost:3000/beers")
+  fetch (url)
       .then(r => r.json())
       .then(beers => {
       allBeers = beers
@@ -86,7 +87,7 @@ function fetchBooks(){
               // let editNewDescription = editDescription.value
             console.log(newDescription)
 
-            fetch(`http://localhost:3000/beers/${e.target.dataset.id}`,{
+            fetch(`${url}/${e.target.dataset.id}`,{
               method: "PATCH",
               headers:{
                 "Content-Type" : "application/json",
