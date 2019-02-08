@@ -50,7 +50,7 @@ function fetchBooks(){
               .then ( response => response.json())
               .then ( foundBeer =>{
                 oneBeer = foundBeer
-                beerContainer.innerHTML +=
+                beerContainer.innerHTML =
                   `
                   <h1 class="ui-header" data-id=${foundBeer.id}> ${foundBeer.name}</h1>
                     <img data-id=${foundBeer.id} src="${foundBeer.image_url}">
@@ -95,41 +95,8 @@ function fetchBooks(){
               body: JSON.stringify({
                 description: newDescription
                 })
-              })  //end fetch 
-
-
+              })  //end fetch
           }
         }) // end edit event listener
-
-
-
-        // editBeer.addEventListener("submit," (e) => {
-        //   e.preventDefault()
-        //
-        //
-        // //
-        //   fetch(`http://localhost:3000/beers/${beerData.id}`, {
-        //     method: 'PATCH',
-        //     body: JSON.stringify({
-        //       description: editDescription
-        //     }),
-        //     headers: {
-        //       'Content-Type': 'application/json'
-        //     }
-        //   }).then( response => response.json() )
-        //   .then( book => {
-        //     editedDescription.innerHTML = `
-        //       <br>
-        //       <textarea name="beerEdit" form="beer" class="description">${beerData.description}</textarea>
-        //     `
-        //     editForm.innerHTML = ""
-        //   })
-        // })
-
-         //edit Beer Event Listener
-
-
-
-  // } // end fucntion edit Beer
 
 }) // END DOMContentLoaded
