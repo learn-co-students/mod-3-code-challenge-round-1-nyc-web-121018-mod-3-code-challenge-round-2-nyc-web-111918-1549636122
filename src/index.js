@@ -30,21 +30,29 @@ document.addEventListener("DOMContentLoaded", function(event) {
         <img src="${clickedBeer.image_url}">
         <h3>"${clickedBeer.tagline}"</h3>
         <textarea>${clickedBeer.description}</textarea>
-        <button data-id="${clickedBeer.id}" class="btn btn-info">
+        <button id="${clickedBeer.id}" data-id="edit-beer" class="btn btn-info">
           Save
         </button>
     `
   })
 
-  beerInfo.addEventListener('submit', e => {
-    e.preventDefault()
-    if (e.target.className === "btn btn-info"){
+  beerInfo.addEventListener('click', e => {
+    if (e.target.dataset.id === "edit-beer"){
       //Not sure how exactly to grab the value of the new text and push that up to the DOM. I know that I am
       //90% of the way there. Not sure how exactly to
-      // let beerDescription = e.target.previousElementSibling.innerText //Don't think I need to set a variable for the old description since I am simply replacing the text
-      let newBeerDescription = be.target.previousElementSibling.innerText
+      // let beerDescription = e.target.previousElementSibling.innerText //Don't think I need to set a variable for the old description since I am simply replacing the text on the DOM
+      // console.log('e.target');
+      let beerId = e.target.id
 
-      fetch(`http://localhost:3000/beers/${e.target.dataset.id}`, {
+      let currentBeer = allBeers.find(beer => {
+        return beer.id === parseInt(beerId)
+      })
+      let indexOfCurrentBeer = allBeers.indexOf(currentBeer) //find where in my allBeers array the current beer lives
+      // console.log(currentBeer);
+      let newBeerDescription = e.target.parentElement.querySelector('textarea').value //Where the description will live on the DOM
+      // console.log(newBeerDescription);
+      //
+      fetch(`http://localhost:3000/beers/${e.target.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -54,6 +62,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
           description: newBeerDescription
         })
       })
+      .then (response => response.json())  //Parse the response and set the newbeer description to where the old beer description lived
+      .then (newBeer => {
+        allBeers[indexOfCurrentBeer] = newBeer
+      })//fetch
     }
   })
 })//end of DOMContentLoaded
