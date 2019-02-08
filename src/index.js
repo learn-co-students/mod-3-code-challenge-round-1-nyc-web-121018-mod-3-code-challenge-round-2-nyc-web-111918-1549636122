@@ -23,9 +23,9 @@ function fetchBooks(){
         // console.log(beer.name)
       let beerHTML = beers.map(function(beer) {
           return `
-          <ul class="list-group">
+
             <li class="list-group-item" data-id="${beer.id}">${beer.name}</li>
-          </ul>
+
           `
       })
       beerList.innerHTML =
@@ -59,6 +59,7 @@ function fetchBooks(){
                     <br>
                     <textarea name="beerEdit" form="beer" class="description">${foundBeer.description}</textarea>
                     <button data-id=${foundBeer.id} id="edit-${foundBeer.id}" class="btn btn-info" data-action="edit">Save</button>
+
                   `
                 })
           } //end if statement
@@ -70,11 +71,11 @@ function fetchBooks(){
 
   // function editBeer(){
 
-    beerContainer.addEventListener('input', (e) =>{
-      if (e.target.className === "description") {
-        console.log("DESCRIPTION")
-      }
-    })
+    // beerContainer.addEventListener('input', (e) =>{
+    //   if (e.target.className === "description") {
+    //     console.log("DESCRIPTION")
+    //   }
+    // })
 
 
       beerContainer.addEventListener('click', (e) => {
