@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   beerList.addEventListener('click', e => {
     if (e.target.tagName = 'li') {
-      let selectedBeer = {}
       fetch(`${URL}/${e.target.dataset.id}`)
         .then(r => r.json())
         .then(beer => showBeerDetail(beer))
