@@ -1,69 +1,102 @@
 document.addEventListener("DOMContentLoaded", function(){
-  let allBeers = []
-const beerContainer = document.getElementById("list-group")
 
+const beerList = document.querySelector(".list-group")
 const beerDetailsContainer = document.getElementById("beer-detail")
+let allBeer = []
+
 
 fetch("http://localhost:3000/beers")
   .then(r => r.json())
-  .then(beers =>{
-    let beersHTML = beers.map(beer =>{
-      allBeers = beers
+  .then(beersData =>{
+  allBeer = beersData
+      //console.log(beerData)
+    let beerHTML = beersData.map(beer =>{
       return `
-      <table>
-      <tr>
-      <td class="beerName" data-id=${beer.id}>${beer.name}</td>
-      </tr>
-      </table>
+      <ul class="list-group">
+        <li class="list-group-item" data-id=${beer.id}>${beer.name}</li>
+      </ul>
       `
-    })//end of map
-    beerContainer.innerHTML += beersHTML.join('')
+      //console.log(beersData)
+    })//end map
+    beerList.innerHTML += beerHTML.join('')
 
   })//end then
 
-  beerContainer.addEventListener("click", function(e){
-    //console.log(e.target)
+  beerList.addEventListener("click", (e)=>{
+    //console.log(e.target);
+    if(e.target.className === "list-group-item"){
+    let beerId = (e.target.dataset.id);
+    //console.log(beerId)
+    fetch(`http://localhost:3000/beers/${beerId}`)
+    .then(r => r.json())
+    .then(function(myBeer){
+      // console.log(myBeer)
+      // console.log(myBeer.name);
+      // console.log(myBeer.description);
+      // console.log(myBeer.image_url);
+      let beerDetailHTML =
+          `<h1>${myBeer.name}</h1>
+          <img src=${myBeer.image_url}>
+          <h3>${myBeer.tagline}</h3>
+          <textarea id="comments" data-id=${myBeer.id}>${myBeer.description}</textarea>
+          <button data-id=${myBeer.id} class="btn btn-info">
+            Save
+          </button>`
+          //console.log(beerHTML);
+      beerDetailsContainer.innerHTML = beerDetailHTML
+      //e.target.reset()
+    });//end then
+    }//close if statement
+  })//end beerlist event listener
+
+  //UPDATE description
+  //allow changes in text box when new comments made hit save
+  //need to listen for when save button is submitted
+  //Optimistic- when submitted save to the DOM- whne choose another can go back and see changes
+  //then save to the database
 
 
-    let foundBeer = allBeers.find(beer => {
-      return parseInt(e.target.dataset.id) ===beer.id
-    })
-    let beerDetailsHTML = `<h2>${foundBeer.name}</h2>
-    <div>
-    <img src=${foundBeer.image_url}/>
-    <h4>${foundBeer.tagline}</h4>
-    </div>
-    <form>
-    <input type="text" data-id=${foundBeer.id}
-   value="${foundBeer.description}">
-     <input type="submit" value="save">
-    </form>
-    `
-    beerDetailsContainer.innerHTML = beerDetailsHTML
-    // console.log(beerDetailsContainer);
-    // console.log(beerDetailsHTML);
-})
-beerDetailsContainer.addEventListener("submit", (e)=>{
-  e.preventDefault()
-  //console.log(e.target);
-  let comment = e.target.children[0].value
-  //console.log(comment);yes!!
-  console.log(e.target.parentElement.children[0].dataset.id)
-
-  fetch(`http://localhost:3000/beers/${e.target.parentElement.children[0].dataset.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          description: comment
-        })
-    })
-
-})
+  // const saveBtn = document.querySelector("#edit-beer")
+  const comments = document.querySelector("#comments")
+  beerDetailsContainer.addEventListener('click', function(event){
+    event.preventDefault()
+    console.log(event.target);
+    // console.log(event.target.previousElementSibling.value)
+    const newComment = event.target.previousElementSibling.value
+    console.log(newComment);
+    //console.log(event.target.dataset.id)
+    const commentId =  parseInt(event.target.dataset.id)
+    console.log(commentId);
+//
+    fetch(`http://localhost:3000/beers/${commentId}`, {
+      method: "PATCH",
+       headers: {
+         "Content-Type": "application/json",
+         "Accept": "application/json"
+       },
+       body: JSON.stringify({
+         description: newComment
+       })
+    })//end of fetch
+    // .then(r => r.json())
+    // .then(updtBeer => {
+    //   let newBeerHTML=
+    //   `<h1>${updtBeer.name}</h1>
+    //   <img src=${updtBeer.image_url}>
+    //   <h3>${updtBeer.tagline}</h3>
+    //   <textarea id="comments" data-id=${updtBeer.id}>${updtBeer.description}</textarea>
+    //   <button data-id=${updtBeer.id}class="btn btn-info">
+    //     Save
+    //   </button>`
+      //console.log(beerHTML);
+  // beerDetailsContainer.innerHTML += newBeerHTML
+  //event.target.reset()
 
 
+// })//end of then
 
+
+
+})//end of event listener
 
 })//end DOMContentLoaded
